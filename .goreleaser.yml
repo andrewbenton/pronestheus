@@ -45,18 +45,36 @@ release:
     name: pronestheus
 
 dockers:
-  - dockerfile: Dockerfile
+  - use: buildx
+    dockerfile: Dockerfile
     goos: linux
     goarch: amd64
+    build_flag_templates:
+      - "--pull"
+      - "--platform=linux/amd64"
     image_templates:
-      - "grdl/pronestheus:{{ .Tag }}"
-      - "grdl/pronestheus:latest"
-  - dockerfile: Dockerfile
+      - "grdl/pronestheus:{{ .Tag }}-amd64"
+      - "grdl/pronestheus:latest-amd64"
+  - use: buildx
+    dockerfile: Dockerfile
     goos: linux
     goarch: arm64
+    build_flag_templates:
+      - "--pull"
+      - "--platform=linux/arm64"
     image_templates:
-      - "grdl/pronestheus:{{ .Tag }}"
-      - "grdl/pronestheus:latest"
+      - "grdl/pronestheus:{{ .Tag }}-arm64"
+      - "grdl/pronestheus:latest-arm64"
+
+docker_manifests:
+  - name_template: "grdl/pronestheus:{{ .Tag }}"
+    image_templates:
+      - "grdl/pronestheus:{{ .Tag }}-amd64"
+      - "grdl/pronestheus:{{ .Tag }}-arm64"
+  - name_template: "grdl/pronestheus:latest"
+    image_templates:
+      - "grdl/pronestheus:latest-amd64"
+      - "grdl/pronestheus:latest-arm64"
 
 nfpms:
   - license: MIT
